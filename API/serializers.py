@@ -14,6 +14,6 @@ class PostSerializer(serializers.ModelSerializer):
 	owner = serializers.ReadOnlyField(source='owner.username')
 	class Meta:
 		model = Post
-		fields = ('id','title','description','mediaFile','owner')
+		fields = ('id','title','description','mediaFile','owner','category')
 
 

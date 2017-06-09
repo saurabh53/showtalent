@@ -16,17 +16,40 @@ from API.permissions import IsOwnerOrReadOnly
 from rest_framework.authentication import TokenAuthentication
 from API.auth import TokenAuth
 from API.models import Post
+from django.conf import settings
+
+
+class PostListOnCategory(generics.ListCreateAPIView):
+	permission_classes = (permissions.IsAuthenticated,)
+	serializer_class = PostSerializer
+	def get_queryset(self):
+		category = self.request.GET.get('category')
+		if category == None:
+			return JsonResponse({'detail':'Please provide category'},status=400)
+		queryset = Post.objects.filter(owner=self.request.user).filter(category=category)
+		return queryset
+
+
 
 class PostList(generics.ListCreateAPIView):
+
     #queryset = Post.objects.filter(owner=request.user)
     serializer_class = PostSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
-    	queryset = Post.objects.filter(owner=self.request.user)
-    	return queryset
+		# print settings.TRIE.start_with_prefix('jumbo')
+		queryset = Post.objects.filter(owner=self.request.user)
+		return queryset
     def perform_create(self,serializer):
-        serializer.save(owner=self.request.user)
+		category = self.request.POST.get('category')
+		if category ==None:
+			category = ''
+		print 'category',category
+		if not settings.TRIE.has_word(category):
+			print 'Cat ',category
+			settings.TRIE.add(category)
+		serializer.save(owner=self.request.user)
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -66,3 +89,13 @@ def get_auth_token(request):
 			#return redirect(settings.LOGIN_URL,request)
 			#return render(request,'<h1>done right..</h1>',{})
 	return redirect(settings.LOGIN_URL,request)	
+
+@csrf_exempt
+def get_query(request):
+	qP = request.GET.get('qP')
+	print 'qP',qP
+	if not qP == None:
+		q = settings.TRIE.start_with_prefix(qP)
+		return JsonResponse({'qP':q})
+	return JsonResponse({'detail':'Please provide query parameter'})	
+

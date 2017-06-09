@@ -16,6 +16,7 @@ class Post(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	title = models.CharField(max_length=100,blank=True,default='')
 	description = models.TextField(blank=True)
+	category = models.CharField(max_length=50,blank=True,default='')
 	mediaFile = models.FileField(upload_to='documents/',blank=True)
 	owner = models.ForeignKey('auth.User',related_name='posts',on_delete=models.CASCADE)
 

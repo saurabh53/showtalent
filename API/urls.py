@@ -13,6 +13,8 @@ urlpatterns=[
 	url(r'^get_auth_token/$',rest_framework_views.obtain_auth_token,name='get_auth_token'),
 	url(r'^users/(?P<pk>[0-9]+)/$', local_views.UserList.as_view()),
 	url(r'^posts/$', local_views.PostList.as_view()),
+	url(r'^posts/category/$', local_views.PostListOnCategory.as_view()),
+	url(r'^posts/query/$', local_views.get_query,name='get_query'),
 	url(r'^posts/(?P<pk>[0-9]+)/$', local_views.PostDetail.as_view()),
 
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
