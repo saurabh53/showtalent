@@ -10,12 +10,13 @@ from django.http import JsonResponse
 from django.core import serializers
 from rest_framework import permissions
 from django.contrib.auth.models import User
-from API.serializers import UserSerializer,PostSerializer
+from API.serializers import UserSerializer,PostSerializer,ProfileSerializer
 from rest_framework import generics
 from API.permissions import IsOwnerOrReadOnly
 from rest_framework.authentication import TokenAuthentication
 from API.auth import TokenAuth
 from API.models import Post
+from API.models import UserProfile
 from django.conf import settings
 
 
@@ -58,6 +59,21 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
     	queryset = Post.objects.filter(owner=self.request.user)
     	return queryset
+
+class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    #queryset = Post.objects.all()
+    serializer_class = ProfileSerializer
+    def get_queryset(self):
+    	queryset = UserProfile.objects.filter(owner=self.request.user)
+    	return queryset
+
+
+class UserRegistration(generics.CreateAPIView):
+	serializer_class = UserSerializer
+	permission_classes = (permissions.AllowAny,)
+	def perform_create(self,serializer):
+		return serializer.save()
 
 
 class UserList(generics.RetrieveUpdateDestroyAPIView):
