@@ -64,8 +64,17 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     #queryset = Post.objects.all()
     serializer_class = ProfileSerializer
+    def perform_update(self,serializer):
+    	instance = serializer.save()
+    	#print 'Updated '+instance.owner
+    def get_object(self):
+    	queryset = self.get_queryset()
+    	return queryset[0]
+
     def get_queryset(self):
+    	print self.request.user
     	queryset = UserProfile.objects.filter(owner=self.request.user)
+    	print 'queryset ',queryset[0].owner
     	return queryset
 
 
