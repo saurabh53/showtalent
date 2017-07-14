@@ -18,6 +18,7 @@ from API.auth import TokenAuth
 from API.models import Post
 from API.models import UserProfile
 from django.conf import settings
+import time
 
 
 class PostListOnCategory(generics.ListCreateAPIView):
@@ -82,7 +83,14 @@ class UserRegistration(generics.CreateAPIView):
 	serializer_class = UserSerializer
 	permission_classes = (permissions.AllowAny,)
 	def perform_create(self,serializer):
-		return serializer.save()
+		print '-------UserRegistration-------',self.request.user
+		user = serializer.save()
+		if user:
+			token,created = Token.objects.get_or_create(user=user)
+			user.token=token.key
+			print 'Token for the user ',token.key
+			#time.sleep(5)
+			#return JsonResponse({'token':token.key},safe=False,status=200)
 
 
 class UserList(generics.RetrieveUpdateDestroyAPIView):

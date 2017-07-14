@@ -21,7 +21,7 @@ class ApiConfig(AppConfig):
 		for word in array:
 			if word!=None:
 				settings.TRIE.add(word)
-		# settings.TRIE.add('goodbye in trie: ')
+		settings.TRIE.add('goodbye in trie: ')
 		# print 'goodbye in trie: ',settings.TRIE.has_word('goodbye in trie: ')
 		# print settings.TRIE.start_with_prefix('goodbye')
 		# print settings.TRIE.start_with_prefix('t')	

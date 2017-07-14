@@ -39,6 +39,6 @@ class UserProfile(models.Model):
 	country = models.CharField(max_length=100,blank=True,default='')
 	bio = models.TextField(blank=True,default='')
 	website = models.URLField(default='',blank=True)
-
+	
 	class Meta:
 		ordering = ('created','owner')
