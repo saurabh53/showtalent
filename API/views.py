@@ -75,7 +75,6 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
     	print self.request.user
     	queryset = UserProfile.objects.filter(owner=self.request.user)
-    	print 'queryset ',queryset[0].owner
     	return queryset
 
 
@@ -83,7 +82,6 @@ class UserRegistration(generics.CreateAPIView):
 	serializer_class = UserSerializer
 	permission_classes = (permissions.AllowAny,)
 	def perform_create(self,serializer):
-		print '-------UserRegistration-------',self.request.user
 		user = serializer.save()
 		if user:
 			token,created = Token.objects.get_or_create(user=user)

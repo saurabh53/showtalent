@@ -6,8 +6,6 @@ from rest_framework.authtoken.models import Token
 
 
 class UserSerializer(serializers.ModelSerializer):
-	#posts = serializers.PrimaryKeyRelatedField(many=True,queryset=Post.objects.all())
-	#profile = serializers.PrimaryKeyRelatedField(many=True,queryset=UserProfile.objects.all())
 	token = serializers.CharField(max_length=20,allow_blank=True,default='')
 	class Meta:
 		model = User
