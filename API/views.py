@@ -18,6 +18,7 @@ from API.auth import TokenAuth
 from API.models import Post
 from API.models import UserProfile
 from django.conf import settings
+import time
 
 
 class PostListOnCategory(generics.ListCreateAPIView):
@@ -64,7 +65,15 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     #queryset = Post.objects.all()
     serializer_class = ProfileSerializer
+    def perform_update(self,serializer):
+    	instance = serializer.save()
+    	#print 'Updated '+instance.owner
+    def get_object(self):
+    	queryset = self.get_queryset()
+    	return queryset[0]
+
     def get_queryset(self):
+    	print self.request.user
     	queryset = UserProfile.objects.filter(owner=self.request.user)
     	return queryset
 
@@ -73,7 +82,13 @@ class UserRegistration(generics.CreateAPIView):
 	serializer_class = UserSerializer
 	permission_classes = (permissions.AllowAny,)
 	def perform_create(self,serializer):
-		return serializer.save()
+		user = serializer.save()
+		if user:
+			token,created = Token.objects.get_or_create(user=user)
+			user.token=token.key
+			print 'Token for the user ',token.key
+			#time.sleep(5)
+			#return JsonResponse({'token':token.key},safe=False,status=200)
 
 
 class UserList(generics.RetrieveUpdateDestroyAPIView):
